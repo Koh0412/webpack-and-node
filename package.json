@@ -1,0 +1,31 @@
+{
+  "name": "cookie-prac",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./build/src/app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "cross-env TS_NODE_PROJECT=\"tsconfig.webpack.json\" webpack --progress",
+    "dev": "cross-env TS_NODE_PROJECT=\"tsconfig.webpack.json\" webpack --progress --watch",
+    "server:dev": "tsnd --respawn ./src/server/index.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/mini-css-extract-plugin": "^0.9.1",
+    "@types/webpack": "^4.41.22",
+    "cross-env": "^7.0.2",
+    "css-loader": "^4.3.0",
+    "mini-css-extract-plugin": "^0.11.2",
+    "sass": "^1.26.11",
+    "sass-loader": "^10.0.2",
+    "ts-loader": "6.2.1",
+    "ts-node": "8.5.3",
+    "ts-node-dev": "^1.0.0-pre.62",
+    "tsconfig-paths": "^3.9.0",
+    "typescript": "3.7.2",
+    "webpack": "4.41.2",
+    "webpack-cli": "3.3.10"
+  }
+}

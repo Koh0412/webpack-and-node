@@ -1,0 +1,35 @@
+body {
+  background: white;
+  margin: 0;
+}
+
+header {
+  nav {
+    display: flex;
+    justify-content: space-between;
+    background: #00a2ff;
+    margin-bottom: .5rem;
+
+    .nav-logo-sector {
+      .logo {
+        text-decoration: none;
+        color: white;
+      }
+    }
+  }
+}
+
+main {
+  padding: .5rem;
+
+  .msg {
+    display: inline-block;
+    background: linear-gradient(30deg, #1269ea, #bc31d6);
+    padding: .25rem .75rem;
+    border-radius: 5px;
+    color: white;
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}

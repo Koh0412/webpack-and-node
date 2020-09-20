@@ -1,0 +1,29 @@
+body {
+  background: white;
+  margin: 0;
+}
+
+header nav {
+  display: flex;
+  justify-content: space-between;
+  background: #00a2ff;
+  margin-bottom: 0.5rem;
+}
+header nav .nav-logo-sector .logo {
+  text-decoration: none;
+  color: white;
+}
+
+main {
+  padding: 0.5rem;
+}
+main .msg {
+  display: inline-block;
+  background: linear-gradient(30deg, #1269ea, #bc31d6);
+  padding: 0.25rem 0.75rem;
+  border-radius: 5px;
+  color: white;
+}
+main .msg:hover {
+  cursor: pointer;
+}
