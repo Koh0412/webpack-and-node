@@ -1,11 +1,11 @@
 import * as http from "http";
-import { ServerHandler } from "./handler/serverHandler";
-
-const PORT = 8011;
+import { PORT_NUMBER } from "./constants/system";
+import { ServerHandler } from "./modules/serverHandler";
 
 const server: http.Server = http.createServer((req, res) => {
   const serverHandler = new ServerHandler(req, res);
   serverHandler.returnStaticFile();
 });
 
-server.listen(PORT);
+console.log(`listening server port is ${PORT_NUMBER}...`);
+server.listen(PORT_NUMBER);

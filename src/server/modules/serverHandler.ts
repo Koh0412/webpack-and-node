@@ -1,7 +1,11 @@
 import * as http from "http";
 import * as fs from "fs";
 import * as path from "path";
+import HttpStatus from "http-status-codes";
+
 import { IMimeType, mimeTypes } from "../constants/mimeType";
+import { CONTENT_TYPE_HTML, ROOT } from "../constants/system";
+import { accessLog } from "../utils/functions";
 
 export class ServerHandler {
   private staticDir: string;
@@ -18,7 +22,7 @@ export class ServerHandler {
    * urlがrootであるか
    */
   get isRoot(): boolean {
-    return this.request.url === "/";
+    return this.request.url === ROOT;
   }
 
   /**
@@ -39,11 +43,18 @@ export class ServerHandler {
     return path.extname(this.filePath).toLowerCase() as keyof IMimeType;
   }
 
+  private get isTypeHTML(): boolean {
+    return this.contentType === CONTENT_TYPE_HTML;
+  }
+
   /**
    * コンテントタイプ
    */
   private get contentType(): string {
-    return mimeTypes[this.extname] || "application/octet-stream";
+    if (!this.extname) {
+      return CONTENT_TYPE_HTML;
+    }
+    return mimeTypes[this.extname] || "";
   }
 
   /**
@@ -63,7 +74,7 @@ export class ServerHandler {
     // エラー時処理
     readStream.on("error", (err) => this.dispNotFound(err));
     // 成功時処理
-    readStream.on("data", (chunk) => this.responseOK(chunk));
+    readStream.on("data", (chunk) => this.redirectResponse(chunk));
   }
 
   /**
@@ -72,15 +83,19 @@ export class ServerHandler {
    */
   private dispNotFound(err: Error): void {
     const notFound = fs.createReadStream(`${this.staticDir}/404.html`);
-    notFound.on("data", (chunk) => this.responseOK(chunk));
+    notFound.on("data", (chunk) => this.redirectResponse(chunk, HttpStatus.NOT_FOUND));
   }
 
   /**
-   * ステータスコード200とチャンクを返す
+   * レスポンスヘッダとチャンクデータを返す
    * @param chunk
+   * @param code
    */
-  private responseOK(chunk: string | Buffer): void {
-    this.response.writeHead(200, {"Content-Type": this.contentType});
+  private redirectResponse(chunk: string | Buffer, code: number = HttpStatus.OK): void {
+    this.response.writeHead(code, {"Content-Type": this.contentType});
     this.response.end(chunk, "utf-8");
+    if (this.isTypeHTML) {
+      accessLog(this.request, this.response);
+    }
   }
 }

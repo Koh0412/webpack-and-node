@@ -5,8 +5,9 @@
   "main": "./build/src/app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "cross-env TS_NODE_PROJECT=\"tsconfig.webpack.json\" webpack --progress",
-    "dev": "cross-env TS_NODE_PROJECT=\"tsconfig.webpack.json\" webpack --progress --watch",
+    "webpack": "cross-env TS_NODE_PROJECT=\"tsconfig.webpack.json\" webpack --progress",
+    "webpack:dev": "cross-env TS_NODE_PROJECT=\"tsconfig.webpack.json\" webpack --progress --watch",
+    "server": "ts-node ./src/server/index.ts",
     "server:dev": "tsnd --respawn ./src/server/index.ts"
   },
   "keywords": [],
@@ -17,6 +18,8 @@
     "@types/webpack": "^4.41.22",
     "cross-env": "^7.0.2",
     "css-loader": "^4.3.0",
+    "http-status-codes": "^2.1.4",
+    "log4js": "^6.3.0",
     "mini-css-extract-plugin": "^0.11.2",
     "sass": "^1.26.11",
     "sass-loader": "^10.0.2",
