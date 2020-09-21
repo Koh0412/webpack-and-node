@@ -43,6 +43,9 @@ export class ServerHandler {
     return path.extname(this.filePath).toLowerCase() as keyof IMimeType;
   }
 
+  /**
+   * コンテントタイプがtext/htmlであるか
+   */
   private get isTypeHTML(): boolean {
     return this.contentType === CONTENT_TYPE_HTML;
   }
