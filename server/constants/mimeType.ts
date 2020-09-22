@@ -1,3 +1,5 @@
+import { DEFAULT_CHARSET } from "./system";
+
 export interface IMimeType {
   ".html": string,
   ".ico": string,
@@ -17,7 +19,7 @@ export interface IMimeType {
 }
 
 export const mimeTypes: IMimeType = {
-  ".html": "text/html",
+  ".html": "text/html; " + DEFAULT_CHARSET,
   ".ico": "image/vnd.microsoft.icon",
   ".css": "text/css",
   ".js": "text/javascript",

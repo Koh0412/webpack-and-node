@@ -4,7 +4,7 @@ import * as path from "path";
 import HttpStatus from "http-status-codes";
 
 import { IMimeType, mimeTypes } from "../constants/mimeType";
-import { CONTENT_TYPE_HTML, ROOT } from "../constants/system";
+import { CONTENT_TYPE_HTML, EXT_HTML, ROOT } from "../constants/system";
 import { accessLog } from "../utils/functions";
 
 export class ServerHandler {
@@ -12,35 +12,40 @@ export class ServerHandler {
   private request: http.IncomingMessage;
   private response: http.ServerResponse;
 
+  private requestURL: string | undefined;
+  private filePath: string;
+  private _ext: string;
+
   constructor(req: http.IncomingMessage, res: http.ServerResponse) {
     this.staticDir = "./public";
     this.request = req;
     this.response = res;
+    this.requestURL = this.request.url?.split("?")[0];
+
+    this.filePath = this.staticDir + this.requestURL;
+    if (this.isRoot) {
+      this.filePath = this.staticDir + "/index.html";
+    }
+
+    this._ext = this.searchExtension(this.filePath);
+    if (!this._ext) {
+      this.filePath += EXT_HTML;
+      this._ext = EXT_HTML;
+    }
   }
 
   /**
    * urlがrootであるか
    */
   get isRoot(): boolean {
-    return this.request.url === ROOT;
-  }
-
-  /**
-   * リクエストのurlにパブリックフォルダ名を付けて返す
-   */
-  get filePath(): string {
-    let url = this.staticDir + this.request.url
-    if (this.isRoot) {
-      url = this.staticDir + "/index.html";
-    }
-    return url;
+    return this.requestURL === ROOT;
   }
 
   /**
    * リクエストのurlの拡張子
    */
   private get extname() {
-    return path.extname(this.filePath).toLowerCase() as keyof IMimeType;
+    return this._ext as keyof IMimeType;
   }
 
   /**
@@ -54,9 +59,6 @@ export class ServerHandler {
    * コンテントタイプ
    */
   private get contentType(): string {
-    if (!this.extname) {
-      return CONTENT_TYPE_HTML;
-    }
     return mimeTypes[this.extname] || "";
   }
 
@@ -100,5 +102,13 @@ export class ServerHandler {
     if (this.isTypeHTML) {
       accessLog(this.request, this.response);
     }
+  }
+
+  /**
+   * 値の拡張子を調べる
+   * @param value
+   */
+  private searchExtension(value: string): string {
+    return path.extname(value).toLowerCase();
   }
 }
