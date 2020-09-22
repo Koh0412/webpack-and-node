@@ -23,7 +23,7 @@ const cssLoaders: webpack.RuleSetUse = [
 
 const config: webpack.Configuration = {
   mode: mode,
-  context: path.join(__dirname, './src/client'),
+  context: path.join(__dirname, './src'),
   entry: {
     index: './index.ts',
   },
