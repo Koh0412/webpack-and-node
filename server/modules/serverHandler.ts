@@ -70,6 +70,7 @@ export class ServerHandler {
     this.staticDir = dir;
   }
 
+  //TODO: ここの処理自体を大きく変える必要ありそう
   /**
    * 静的なファイルをページに返す
    */
@@ -79,7 +80,15 @@ export class ServerHandler {
     // エラー時処理
     readStream.on("error", (err) => this.dispNotFound(err));
     // 成功時処理
-    readStream.on("data", (chunk) => this.redirectResponse(chunk));
+    readStream.on("data", (chunk) => {
+      if (this.request.method === "GET") {
+        this.outputData(chunk);
+      }
+      // TODO: 一時的なもの
+      if (this.request.method === "POST") {
+        this.redirectTo("/");
+      }
+    });
   }
 
   /**
@@ -88,20 +97,28 @@ export class ServerHandler {
    */
   private dispNotFound(err: Error): void {
     const notFound = fs.createReadStream(`${this.staticDir}/404.html`);
-    notFound.on("data", (chunk) => this.redirectResponse(chunk, HttpStatus.NOT_FOUND));
+    notFound.on("data", (chunk) => this.outputData(chunk, HttpStatus.NOT_FOUND));
   }
 
   /**
-   * レスポンスヘッダとチャンクデータを返す
+   * レスポンスヘッダとチャンクデータを出力する
    * @param chunk
    * @param code
    */
-  private redirectResponse(chunk: string | Buffer, code: number = HttpStatus.OK): void {
+  private outputData(chunk: string | Buffer, code: number = HttpStatus.OK): void {
     this.response.writeHead(code, {"Content-Type": this.contentType});
     this.response.end(chunk, "utf-8");
     if (this.isTypeHTML) {
       accessLog(this.request, this.response);
     }
+  }
+
+  private redirectTo(URL: string) {
+    this.response.writeHead(HttpStatus.MOVED_TEMPORARILY, {
+      "Content-Type": this.contentType,
+      "Location": URL
+    });
+    this.response.end();
   }
 
   /**
